@@ -24,5 +24,63 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public Reservation reserveSpot(Integer userId, Integer parkingLotId, Integer timeInHours, Integer numberOfWheels) throws Exception {
 
+        if(!parkingLotRepository3.findById(parkingLotId).isPresent() || !userRepository3.findById(userId).isPresent()){
+            throw new Exception("Cannot make reservation");
+        }
+        User user = userRepository3.findById(userId).get();
+        ParkingLot parkingLot = parkingLotRepository3.findById(parkingLotId).get();
+        List<Spot> spots = parkingLot.getSpotList();
+
+        int minCost = Integer.MIN_VALUE;
+
+        Spot bookedSpot = null;
+
+        if(numberOfWheels==2){
+            for (Spot spot: spots){
+                int cost = timeInHours*spot.getPricePerHour();
+                if(cost<minCost){
+                    bookedSpot = spot;
+                }
+            }
+        }
+        else if(numberOfWheels==4){
+            for (Spot spot: spots){
+                if(spot.getSpotType()==SpotType.TWO_WHEELER){
+                    continue;
+                }
+                int cost = timeInHours*spot.getPricePerHour();
+                if(cost<minCost){
+                    bookedSpot = spot;
+                }
+            }
+        }
+        else{
+            for (Spot spot: spots){
+                if(spot.getSpotType()==SpotType.OTHERS) {
+                    int cost = timeInHours * spot.getPricePerHour();
+                    if (cost < minCost) {
+                        bookedSpot = spot;
+                    }
+                }
+            }
+        }
+        if(bookedSpot==null){
+            throw new Exception("Cannot make reservation");
+        }
+
+        Reservation reservation = new Reservation(timeInHours);
+
+        bookedSpot.setOccupied(true);
+        reservation.setSpot(bookedSpot);
+        reservation.setUser(user);
+
+        bookedSpot.getReservations().add(reservation);
+        user.getReservations().add(reservation);
+
+        spotRepository3.save(bookedSpot);
+        userRepository3.save(user);
+
+        return reservation;
+
     }
 }
