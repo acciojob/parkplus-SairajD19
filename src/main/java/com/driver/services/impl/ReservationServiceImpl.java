@@ -24,70 +24,42 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public Reservation reserveSpot(Integer userId, Integer parkingLotId, Integer timeInHours, Integer numberOfWheels) throws Exception {
 
-        try{
-        if(!parkingLotRepository3.findById(parkingLotId).isPresent() || !userRepository3.findById(userId).isPresent()){
-            throw new Exception("Cannot make reservation");
-        }
-        User user = userRepository3.findById(userId).get();
-        ParkingLot parkingLot = parkingLotRepository3.findById(parkingLotId).get();
-        List<Spot> spots = parkingLot.getSpotList();
-
-        int minCost = Integer.MAX_VALUE;
-
-        Spot bookedSpot = null;
-
-        if(numberOfWheels<3){
-            for (Spot spot: spots){
-                if(spot.getSpotType().equals(SpotType.OTHERS) ||
-                        spot.getSpotType().equals(SpotType.FOUR_WHEELER) || spot.getSpotType().equals(SpotType.TWO_WHEELER)) {
-                    int cost = timeInHours * spot.getPricePerHour();
-                    if (cost < minCost && spot.getOccupied()) {
-                        bookedSpot = spot;
-                    }
+        try
+        {
+            Reservation reservation = new Reservation(timeInHours);
+            User user = userRepository3.findById(userId).get();
+            ParkingLot parkingLot = parkingLotRepository3.findById(parkingLotId).get();
+            reservation.setUser(user);
+            List<Spot> spots = parkingLot.getSpotList();
+            Spot spot = null;
+            int price = Integer.MAX_VALUE;
+            for (Spot spot1 : spots) {
+                int wheels;
+                if (spot1.getSpotType() == SpotType.TWO_WHEELER) {
+                    wheels = 2;
+                } else if (spot1.getSpotType() == SpotType.FOUR_WHEELER) {
+                    wheels = 4;
+                } else {
+                    wheels = 100;
+                }
+                if (!spot1.getOccupied() && wheels > numberOfWheels && spot1.getPricePerHour() < price) {
+                    spot = spot1;
+                    price = spot1.getPricePerHour();
                 }
             }
-        }
-        else if(numberOfWheels<5){
-            for (Spot spot: spots){
-                if (spot.getSpotType().equals(SpotType.OTHERS) ||
-                        spot.getSpotType().equals(SpotType.FOUR_WHEELER)) {
-                    int cost = timeInHours * spot.getPricePerHour();
-                    if (cost < minCost && spot.getOccupied()) {
-                        bookedSpot = spot;
-                    }
-                }
+            if (spot == null) {
+                throw new Exception();
             }
+            reservation.setSpot(spot);
+            spot.setOccupied(true);
+            user.getReservationList().add(reservation);
+            spot.getReservationList().add(reservation);
+            spotRepository3.save(spot);
+            userRepository3.save(user);
+            return reservation;
         }
-        else{
-            for (Spot spot: spots){
-                if (spot.getSpotType().equals(SpotType.OTHERS)) {
-                    int cost = timeInHours * spot.getPricePerHour();
-                    if (cost < minCost && spot.getOccupied()) {
-                        bookedSpot = spot;
-                    }
-                }
-            }
-        }
-        if(bookedSpot==null){
-            throw new Exception("Cannot make reservation");
-        }
-
-        Reservation reservation = new Reservation(timeInHours);
-
-        bookedSpot.setOccupied(true);
-        reservation.setNumberOfHours(timeInHours);
-        reservation.setSpot(bookedSpot);
-        reservation.setUser(user);
-
-        bookedSpot.getReservationList().add(reservation);
-        user.getReservationList().add(reservation);
-
-        spotRepository3.save(bookedSpot);
-        userRepository3.save(user);
-
-        return reservation;
-        }
-        catch (Exception e){
+        catch (Exception e) {
+            //throw new Exception();
             return null;
         }
 
