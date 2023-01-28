@@ -65,7 +65,7 @@ public class ReservationServiceImpl implements ReservationService {
             }
         }
         if(bookedSpot==null){
-            throw new Exception("Cannot make reservation");
+            throw new Exception("null");
         }
 
         Reservation reservation = new Reservation(timeInHours);

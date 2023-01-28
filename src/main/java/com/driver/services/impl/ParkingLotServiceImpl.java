@@ -9,6 +9,8 @@ import com.driver.services.ParkingLotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ParkingLotServiceImpl implements ParkingLotService {
     @Autowired
@@ -26,10 +28,10 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     public Spot addSpot(int parkingLotId, Integer numberOfWheels, Integer pricePerHour) {
         ParkingLot parkingLot = parkingLotRepository1.findById(parkingLotId).get();
         Spot spot = new Spot();
-        if(numberOfWheels==2){
+        if(numberOfWheels<4){
             spot.setSpotType(SpotType.TWO_WHEELER);
         }
-        else if(numberOfWheels==4){
+        else if(numberOfWheels<5){
             spot.setSpotType(SpotType.FOUR_WHEELER);
         }
         else{
@@ -58,8 +60,16 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     @Override
     public Spot updateSpot(int parkingLotId, int spotId, int pricePerHour) {
 
-        Spot spot = spotRepository1.findById(spotId).get();
+        //Spot spot = spotRepository1.findById(spotId).get();
         ParkingLot parkingLot = parkingLotRepository1.findById(parkingLotId).get();
+        List<Spot> spots = parkingLot.getSpotList();
+        Spot spot = null;
+        for(Spot spot1: spots){
+            if(spot1.getId()==spotId){
+                spot = spot1;
+                break;
+            }
+        }
         spot.setPricePerHour(pricePerHour);
         spot.setParkingLot(parkingLot);
 
