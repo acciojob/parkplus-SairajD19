@@ -26,14 +26,14 @@ public class PaymentServiceImpl implements PaymentService {
             throw new Exception("Insufficient Amount");
         }
 
-        PaymentMode[] modes = PaymentMode.values();
+        //PaymentMode[] modes = PaymentMode.values();
         boolean check = false;
-        for(PaymentMode mode1: modes){
-            String compMode = mode.toUpperCase();
-            if(mode1.toString()==compMode){
+        //for(PaymentMode mode1: modes){
+            //String compMode = mode.toUpperCase();
+            if(mode.equalsIgnoreCase("cash") || mode.equalsIgnoreCase("card") || mode.equalsIgnoreCase("upi")){
                 check = true;
             }
-        }
+        //}
         if(!check){
             throw new Exception("Payment mode not detected");
         }
