@@ -36,7 +36,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         Spot bookedSpot = null;
 
-        if(numberOfWheels<4){
+        if(numberOfWheels<3){
             for (Spot spot: spots){
                 if(spot.getSpotType().equals(SpotType.OTHERS) ||
                         spot.getSpotType().equals(SpotType.FOUR_WHEELER) || spot.getSpotType().equals(SpotType.TWO_WHEELER)) {
