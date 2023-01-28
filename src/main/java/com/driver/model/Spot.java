@@ -56,7 +56,7 @@ public class Spot {
         this.pricePerHour = pricePerHour;
     }
 
-    public boolean isOccupied() {
+    public boolean getOccupied() {
         return occupied;
     }
 
@@ -72,11 +72,11 @@ public class Spot {
         this.parkingLot = parkingLot;
     }
 
-    public List<Reservation> getReservations() {
+    public List<Reservation> getReservationList() {
         return reservations;
     }
 
-    public void setReservations(List<Reservation> reservations) {
+    public void setReservationList(List<Reservation> reservations) {
         this.reservations = reservations;
     }
 }

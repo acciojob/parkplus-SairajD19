@@ -63,11 +63,11 @@ public class User {
         this.password = password;
     }
 
-    public List<Reservation> getReservations() {
+    public List<Reservation> getReservationList() {
         return reservations;
     }
 
-    public void setReservations(List<Reservation> reservations) {
+    public void setReservationList(List<Reservation> reservations) {
         this.reservations = reservations;
     }
 }

@@ -38,7 +38,7 @@ public class ReservationServiceImpl implements ReservationService {
         if(numberOfWheels==2){
             for (Spot spot: spots){
                 int cost = timeInHours*spot.getPricePerHour();
-                if(cost<minCost){
+                if(cost<minCost && spot.getOccupied()){
                     bookedSpot = spot;
                 }
             }
@@ -49,7 +49,7 @@ public class ReservationServiceImpl implements ReservationService {
                     continue;
                 }
                 int cost = timeInHours*spot.getPricePerHour();
-                if(cost<minCost){
+                if(cost<minCost && spot.getOccupied()){
                     bookedSpot = spot;
                 }
             }
@@ -58,7 +58,7 @@ public class ReservationServiceImpl implements ReservationService {
             for (Spot spot: spots){
                 if(spot.getSpotType()==SpotType.OTHERS) {
                     int cost = timeInHours * spot.getPricePerHour();
-                    if (cost < minCost) {
+                    if (cost < minCost && spot.getOccupied()) {
                         bookedSpot = spot;
                     }
                 }
@@ -74,8 +74,8 @@ public class ReservationServiceImpl implements ReservationService {
         reservation.setSpot(bookedSpot);
         reservation.setUser(user);
 
-        bookedSpot.getReservations().add(reservation);
-        user.getReservations().add(reservation);
+        bookedSpot.getReservationList().add(reservation);
+        user.getReservationList().add(reservation);
 
         spotRepository3.save(bookedSpot);
         userRepository3.save(user);
