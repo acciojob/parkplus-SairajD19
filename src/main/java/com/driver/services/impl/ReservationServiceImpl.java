@@ -24,7 +24,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public Reservation reserveSpot(Integer userId, Integer parkingLotId, Integer timeInHours, Integer numberOfWheels) throws Exception {
 
-        try{
+        //try{
         if(!parkingLotRepository3.findById(parkingLotId).isPresent() || !userRepository3.findById(userId).isPresent()){
             throw new Exception("Cannot make reservation");
         }
@@ -83,10 +83,10 @@ public class ReservationServiceImpl implements ReservationService {
         userRepository3.save(user);
 
         return reservation;
-        }
-        catch (Exception e){
-            throw new Exception(e.toString());
-        }
+//        }
+//        catch (Exception e){
+//            throw new Exception(e.toString());
+//        }
 
     }
 }
