@@ -24,7 +24,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public Reservation reserveSpot(Integer userId, Integer parkingLotId, Integer timeInHours, Integer numberOfWheels) throws Exception {
 
-        //try{
+        try{
         if(!parkingLotRepository3.findById(parkingLotId).isPresent() || !userRepository3.findById(userId).isPresent()){
             throw new Exception("Cannot make reservation");
         }
@@ -32,11 +32,11 @@ public class ReservationServiceImpl implements ReservationService {
         ParkingLot parkingLot = parkingLotRepository3.findById(parkingLotId).get();
         List<Spot> spots = parkingLot.getSpotList();
 
-        int minCost = Integer.MIN_VALUE;
+        int minCost = Integer.MAX_VALUE;
 
         Spot bookedSpot = null;
 
-        if(numberOfWheels==2){
+        if(numberOfWheels<4){
             for (Spot spot: spots){
                 int cost = timeInHours*spot.getPricePerHour();
                 if(cost<minCost && spot.getOccupied()){
@@ -44,9 +44,9 @@ public class ReservationServiceImpl implements ReservationService {
                 }
             }
         }
-        else if(numberOfWheels==4){
+        else if(numberOfWheels<5){
             for (Spot spot: spots){
-                if(spot.getSpotType()==SpotType.TWO_WHEELER){
+                if(spot.getSpotType().equals(SpotType.TWO_WHEELER)){
                     continue;
                 }
                 int cost = timeInHours*spot.getPricePerHour();
@@ -57,7 +57,7 @@ public class ReservationServiceImpl implements ReservationService {
         }
         else{
             for (Spot spot: spots){
-                if(spot.getSpotType()==SpotType.OTHERS) {
+                if(spot.getSpotType().equals(SpotType.OTHERS)) {
                     int cost = timeInHours * spot.getPricePerHour();
                     if (cost < minCost && spot.getOccupied()) {
                         bookedSpot = spot;
@@ -83,10 +83,10 @@ public class ReservationServiceImpl implements ReservationService {
         userRepository3.save(user);
 
         return reservation;
-//        }
-//        catch (Exception e){
-//            throw new Exception(e.toString());
-//        }
+        }
+        catch (Exception e){
+            return null;
+        }
 
     }
 }
