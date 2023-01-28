@@ -27,11 +27,15 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         PaymentMode[] modes = PaymentMode.values();
+        boolean check = false;
         for(PaymentMode mode1: modes){
             String compMode = mode.toUpperCase();
-            if(mode1.toString()!=compMode){
-                throw new Exception("Payment mode not detected");
+            if(mode1.toString()==compMode){
+                check = true;
             }
+        }
+        if(!check){
+            throw new Exception("Payment mode not detected");
         }
 
         Payment payment = new Payment();
