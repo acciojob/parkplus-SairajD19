@@ -38,26 +38,29 @@ public class ReservationServiceImpl implements ReservationService {
 
         if(numberOfWheels<4){
             for (Spot spot: spots){
-                int cost = timeInHours*spot.getPricePerHour();
-                if(cost<minCost && spot.getOccupied()){
-                    bookedSpot = spot;
+                if(spot.getSpotType().equals(SpotType.OTHERS) ||
+                        spot.getSpotType().equals(SpotType.FOUR_WHEELER) || spot.getSpotType().equals(SpotType.TWO_WHEELER)) {
+                    int cost = timeInHours * spot.getPricePerHour();
+                    if (cost < minCost && spot.getOccupied()) {
+                        bookedSpot = spot;
+                    }
                 }
             }
         }
         else if(numberOfWheels<5){
             for (Spot spot: spots){
-                if(spot.getSpotType().equals(SpotType.TWO_WHEELER)){
-                    continue;
-                }
-                int cost = timeInHours*spot.getPricePerHour();
-                if(cost<minCost && spot.getOccupied()){
-                    bookedSpot = spot;
+                if (spot.getSpotType().equals(SpotType.OTHERS) ||
+                        spot.getSpotType().equals(SpotType.FOUR_WHEELER)) {
+                    int cost = timeInHours * spot.getPricePerHour();
+                    if (cost < minCost && spot.getOccupied()) {
+                        bookedSpot = spot;
+                    }
                 }
             }
         }
         else{
             for (Spot spot: spots){
-                if(spot.getSpotType().equals(SpotType.OTHERS)) {
+                if (spot.getSpotType().equals(SpotType.OTHERS)) {
                     int cost = timeInHours * spot.getPricePerHour();
                     if (cost < minCost && spot.getOccupied()) {
                         bookedSpot = spot;
